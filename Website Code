@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Heritage Bookshop | Hiệu Sách Di Sản</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+    /* --- BẢNG MÀU TỐI GIẢN & HIỆN ĐẠI (MINIMALIST) --- */
+    :root {
+        --bg-page: #F5F5F5;       /* Xám rất nhạt cho nền toàn trang */
+        --bg-white: #FFFFFF;      /* Trắng tinh cho các khung/thẻ */
+        --primary: #000000;       /* Màu chủ đạo: Đen tuyền */
+        --text-main: #333333;     /* Màu chữ chính: Xám đậm dễ đọc */
+        --text-light: #666666;    /* Màu chữ phụ: Xám trung tính */
+        --border: #E5E5E5;        /* Màu viền: Xám nhạt tinh tế */
+        --accent: #2196F3;        /* (Tùy chọn) Màu nhấn xanh dương nhẹ kiểu Tiki/Amazon - hoặc để Đen */
+    }
+
+    /* --- CSS CHO SMART HEADER --- */
+
+    /* Đẩy nội dung trang xuống để không bị Header che mất lúc mới vào */
+    body {
+        padding-top: 160px; /* Số này áng chừng chiều cao của Banner + Header + Nav */
+    }
+
+    #sticky-header-container {
+        position: fixed;     /* Cố định vị trí so với màn hình */
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 999;        /* Luôn nằm trên cùng mọi thứ */
+        transition: transform 0.3s ease-in-out; /* Hiệu ứng trượt mượt mà 0.3s */
+        background-color: var(--bg-white); /* Đảm bảo nền trắng không bị trong suốt */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Đổ bóng nhẹ cho đẹp */
+    }
+
+    /* Class này dùng để ẩn Header khi cuộn xuống */
+    .header-hidden {
+        transform: translateY(-100%); /* Dịch chuyển toàn bộ header lên trên khuất màn hình */
+    }
+
+    /* Thiết lập cơ bản */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+    
+    /* Font tiêu đề vẫn giữ Playfair nhưng màu sắc hiện đại hơn */
+    h1, h2, h3, .logo { font-family: 'Playfair Display', serif; color: var(--primary); }
+    
+    body { background-color: var(--bg-page); color: var(--text-main); line-height: 1.6; }
+
+    /* --- HEADER & BANNER --- */
+    .top-banner { 
+        background: var(--primary); color: #fff; 
+        padding: 15px 0; font-size: 16px; text-align: center; 
+        letter-spacing: 1px; text-transform: uppercase; font-weight: 500;
+    }
+
+    header { background-color: var(--bg-white); border-bottom: 1px solid var(--border); padding: 20px 0; }
+    .header-container { 
+        display: flex; align-items: center; justify-content: space-between; 
+        max-width: 1200px; margin: 0 auto; padding: 0 20px; 
+    }
+    
+    /* --- SỬA LOGO THÀNH FONT KHÔNG CHÂN --- */
+.logo {
+    /* 👇 Dòng quan trọng nhất: Đổi sang font không chân */
+    font-family: 'Roboto', Helvetica, Arial, sans-serif; 
+    
+    font-size: 32px; 
+    color: var(--primary); 
+    font-weight: 900;       /* Tăng độ đậm lên mức cao nhất để logo dày dặn */
+    text-transform: uppercase; 
+    letter-spacing: 2px;    /* Tăng khoảng cách giữa các chữ cái cho thoáng và sang */
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+
+/* Nếu bạn muốn icon sách bên cạnh cũng to và đậm theo */
+.logo i {
+    font-size: 36px;
+    margin-right: 5px;
+}
+
+    .search-bar { flex: 1; margin: 0 40px; position: relative; }
+    .search-bar input { 
+        width: 100%; padding: 10px 20px; border-radius: 4px; 
+        border: 1px solid var(--border); outline: none; background: #fff; color: var(--text-main);
+    }
+    .search-bar input:focus { border-color: var(--text-main); }
+    .search-bar button {
+        position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+        background: none; border: none; color: var(--text-light); cursor: pointer;
+    }
+
+    .user-actions { display: flex; gap: 20px; align-items: center; }
+    .user-actions div { cursor: pointer; color: var(--text-main); font-size: 14px; position: relative; font-weight: 500; }
+    .user-actions i { font-size: 18px; color: var(--text-main); margin-right: 5px; }
+    
+    #cart-count-badge {
+        position: absolute; top: -8px; right: -12px; background: #D32F2F; /* Màu đỏ nổi bật cho thông báo */
+        color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 50%; font-weight: bold;
+    }
+
+    /* NAV BAR - Phong cách hiện đại: Nền trắng, chữ đen, đường kẻ dưới */
+    nav { background: var(--bg-white); border-bottom: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+    nav ul { 
+        display: flex; max-width: 1200px; margin: 0 auto; 
+        padding: 0 20px; list-style: none; justify-content: center; gap: 10px;
+    }
+    nav ul li { 
+        color: var(--text-main); padding: 15px 15px; font-size: 14px; 
+        font-weight: 500; text-transform: uppercase; cursor: pointer; transition: 0.2s;
+        border-bottom: 2px solid transparent;
+    }
+    nav ul li:hover { color: var(--primary); border-bottom: 2px solid var(--primary); background: none; }
+
+    /* --- TÌM VÀ SỬA ĐOẠN NÀY --- */
+    .main-container { 
+    display: flex; 
+    
+    /* 👇 SỬA DÒNG NÀY: Tăng từ 1300px lên 95% để tràn màn hình rộng hơn */
+    max-width: 95%; 
+    
+    margin: 60px auto 40px; 
+    padding: 0 20px; 
+    gap: 30px; /* Tăng khoảng cách giữa Sidebar và Nội dung cho thoáng */
+    align-items: flex-start; 
+    }
+
+    /* SIDEBAR - Tối giản, nền trắng */
+    .sidebar { width: 240px; flex-shrink: 0; }
+    .sidebar-section { 
+        background: var(--bg-white); padding: 20px; 
+        border: 1px solid var(--border); margin-bottom: 20px; 
+        border-radius: 4px; /* Bo góc nhẹ */
+        box-shadow: none; /* Bỏ đổ bóng đậm cũ */
+    }
+    .sidebar h3 { 
+        font-size: 16px; margin-bottom: 15px; color: var(--primary); 
+        border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 700;
+        font-family: 'Roboto', sans-serif; text-transform: uppercase;
+    }
+    .category-list li { 
+        list-style: none; padding: 8px 0; border-bottom: 1px solid #f9f9f9; 
+        font-size: 14px; cursor: pointer; color: var(--text-light); transition: 0.2s;
+    }
+    .category-list li:hover { padding-left: 5px; color: var(--primary); }
+    
+    .price-filter label, .filter-item label { 
+        display: flex; align-items: center; gap: 10px; margin: 10px 0; 
+        font-size: 14px; cursor: pointer; color: var(--text-main); 
+    }
+
+    /* Scrollbar cho Sidebar */
+    .scrollable-list { max-height: 200px; overflow-y: auto; padding-right: 5px; }
+    .scrollable-list::-webkit-scrollbar { width: 4px; }
+    .scrollable-list::-webkit-scrollbar-track { background: #f1f1f1; }
+    .scrollable-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+    .filter-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; color: var(--text-main); }
+    .filter-count { color: #999; font-size: 12px; }
+
+    /* --- CONTENT --- */
+    .content { flex: 1; }
+    .sort-bar { 
+        display: flex; justify-content: space-between; align-items: center; 
+        margin-bottom: 20px; padding: 15px; background: var(--bg-white); 
+        border: 1px solid var(--border); border-radius: 4px;
+    }
+    
+    .product-grid { 
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+        gap: 20px; 
+    }
+
+    /* --- SÁCH CARD - Hiện đại, sạch sẽ --- */
+    .book-card { 
+        background: var(--bg-white); padding: 15px; border-radius: 4px; 
+        border: 1px solid var(--border); position: relative; transition: 0.3s;
+        display: flex; flex-direction: column;
+    }
+    .book-card:hover { 
+        border-color: #bbb;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05); /* Đổ bóng nhẹ nhàng, hiện đại */
+    }
+
+    .book-img-container {
+        width: 100%; height: 260px; background: #fff;
+        margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        /* Bỏ border/shadow của ảnh để ảnh nổi trên nền trắng */
+    }
+    .book-img { 
+        max-width: 100%; max-height: 100%; object-fit: contain; /* Giữ nguyên tỉ lệ ảnh */
+        transition: 0.3s;
+    }
+    .book-card:hover .book-img { transform: scale(1.03); }
+
+    .book-tag { 
+        position: absolute; top: 10px; left: 10px; background: #333;
+        color: #fff; font-size: 10px; padding: 4px 8px; font-weight: bold; border-radius: 2px;
+    }
+
+    .book-title { 
+        font-family: 'Roboto', sans-serif; /* Dùng font hiện đại cho tên sách */
+        font-size: 16px; font-weight: 500; color: var(--text-main); margin-bottom: 5px;
+        height: 44px; overflow: hidden; line-height: 1.4;
+    }
+    .book-author { font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
+
+    .price-box { margin-top: auto; display: flex; align-items: baseline; gap: 8px; }
+    .current-price { color: #000; font-size: 18px; font-weight: 700; } /* Giá màu đen đậm */
+    .old-price { color: #999; text-decoration: line-through; font-size: 13px; }
+
+    .btn-add { 
+        width: 100%; background: #fff; color: var(--primary); 
+        border: 1px solid var(--primary); padding: 10px; margin-top: 15px; cursor: pointer; 
+        font-weight: 600; text-transform: uppercase; font-size: 12px; transition: 0.2s; border-radius: 4px;
+    }
+    .btn-add:hover { background: var(--primary); color: #fff; }
+
+    /* --- FOOTER NÂNG CẤP (Layout giống mẫu, Style Minimalist) --- */
+    footer {
+        background-color: var(--bg-white);
+        border-top: 1px solid var(--border);
+        margin-top: 50px;
+        font-size: 14px;
+        color: var(--text-main);
+    }
+
+    /* 1. Thanh Top Bar cam kết */
+    .footer-top-bar {
+        background-color: var(--primary); /* Màu đen */
+        color: #fff;
+        padding: 10px 0;
+        font-size: 13px;
+        font-weight: 500;
+    }
+    .footer-top-inner {
+        max-width: 1200px; margin: 0 auto; padding: 0 20px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-top-item { display: flex; align-items: center; gap: 8px; }
+    .footer-top-item i { color: #fff; font-size: 16px; }
+
+    /* 2. Phần Newsletter & Social (Giữa) */
+    .footer-mid-section {
+        max-width: 1200px; margin: 0 auto; padding: 40px 20px;
+        display: flex; justify-content: space-between; align-items: flex-start;
+        border-bottom: 1px solid var(--border);
+        gap: 40px;
+    }
+
+    /* Bên trái: Đăng ký email */
+    .newsletter-box { flex: 1; }
+    .newsletter-box h4 { font-size: 18px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .newsletter-input-group {
+        display: flex; gap: 10px; margin-top: 15px; max-width: 500px;
+    }
+    .newsletter-input-group input {
+        flex: 1; padding: 10px 15px; border: 1px solid #ccc; outline: none; border-radius: 4px;
+    }
+    .newsletter-input-group button {
+        background: var(--primary); color: #fff; border: none; padding: 0 25px;
+        font-weight: bold; cursor: pointer; border-radius: 4px;
+    }
+
+    /* Bên phải: Social Media */
+    .social-box h4 { font-size: 16px; margin-bottom: 15px; }
+    .social-icons { display: flex; gap: 15px; }
+    .social-icons i {
+        font-size: 24px; color: var(--text-main); cursor: pointer; transition: 0.2s;
+    }
+    .social-icons i:hover { color: var(--primary); transform: scale(1.1); }
+
+    /* 3. Phần Thông tin chi tiết (3 Cột) */
+    .footer-info-grid {
+        max-width: 1200px; margin: 0 auto; padding: 40px 20px;
+        display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; /* Chia tỉ lệ cột */
+        gap: 40px;
+    }
+    .footer-col h5 {
+        font-size: 16px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; color: var(--text-light); cursor: pointer; }
+    .footer-col ul li:hover { color: var(--primary); text-decoration: underline; }
+
+    .contact-info p { margin-bottom: 12px; display: flex; gap: 10px; color: var(--text-light); }
+    .contact-info i { margin-top: 4px; color: var(--primary); }
+
+    /* Ảnh cửa hàng ở cột 3 */
+    .store-img-wrapper {
+        width: 100%; height: 180px; overflow: hidden; border-radius: 8px;
+        position: relative;
+    }
+    .store-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* 4. Bottom bản quyền */
+    .footer-bottom {
+        background: #f9f9f9; padding: 20px 0; text-align: center; font-size: 12px; color: #888;
+    }
+    .gov-icon { height: 60px; margin-top: 10px; opacity: 0.8; } /* Icon bộ công thương */
+
+    /* 5. Nút Chat Nổi */
+    .chat-widget {
+        position: fixed; bottom: 30px; right: 30px;
+        background: var(--primary); color: #fff;
+        padding: 12px 25px; border-radius: 30px;
+        font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        cursor: pointer; display: flex; align-items: center; gap: 10px; z-index: 999;
+        transition: 0.3s;
+    }
+    .chat-widget:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+
+    /* Responsive cho Footer */
+    @media (max-width: 768px) {
+        .footer-top-inner { flex-direction: column; gap: 5px; text-align: center; }
+        .footer-mid-section { flex-direction: column; gap: 30px; }
+        .footer-info-grid { grid-template-columns: 1fr; gap: 30px; }
+        .newsletter-input-group { width: 100%; }
+    }
+
+    /* Toast */
+    .toast {
+        position: fixed; top: 20px; right: -500px; background: #333;
+        color: #fff; padding: 15px 25px; border-left: 5px solid #fff;
+        transition: 0.5s; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        white-space: nowrap; border-radius: 4px;
+    }
+    .toast.show { right: 20px; }
+
+    /* Responsive đơn giản */
+    @media (max-width: 768px) {
+        .header-container { flex-direction: column; gap: 15px; }
+        .search-bar { margin: 10px 0; width: 100%; }
+        nav ul { flex-wrap: wrap; justify-content: center; }
+        .main-container { flex-direction: column; }
+        .sidebar { width: 100%; }
+        .product-grid { grid-template-columns: repeat(2, 1fr); }
+        .footer-grid { grid-template-columns: 1fr; text-align: center; }
+    }
+    /* --- NÚT VỀ ĐẦU TRANG (SCROLL TO TOP) --- */
+    #scrollToTopBtn {
+    display: none; /* Mặc định ẩn, chỉ hiện khi cuộn xuống */
+    position: fixed;
+    bottom: 90px; /* Nằm cao hơn nút Chat (nút Chat là 30px) */
+    right: 30px;
+    z-index: 99; /* Luôn nổi lên trên */
+    border: none;
+    outline: none;
+    background-color: var(--primary); /* Màu đen đồng bộ theme */
+    color: white; /* Mũi tên màu trắng */
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%; /* Bo tròn hoàn toàn */
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Đổ bóng nhẹ */
+    transition: 0.3s;
+    opacity: 0.8; /* Hơi trong suốt nhẹ */
+    }
+
+    #scrollToTopBtn:hover {
+    background-color: #555; /* Màu xám khi di chuột vào */
+    opacity: 1;
+    transform: translateY(-3px); /* Hiệu ứng bay lên nhẹ */
+    }
+    
+    </style>
+</head>
+<body>
+    
+    <div id="sticky-header-container">
+
+    <div class="top-banner" id="promo-banner">
+    KHAI XUÂN NHƯ Ý - LÌ XÌ HẾT Ý: GIẢM ĐẾN 60% TOÀN SÀN
+</div>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-book-open"></i> HERITAGE BOOKS
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Tìm kiếm theo tên sách, tác giả, ISBN...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-actions">
+                <div><i class="far fa-user"></i> Tài khoản</div>
+                <div><i class="far fa-heart"></i> Yêu thích</div>
+                <div id="cart-btn">
+                    <i class="fas fa-shopping-basket"></i> Giỏ hàng
+                    <span id="cart-count-badge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li style="font-weight: 800; color: #000;">Trang Chủ</li>
+            <li>Tất Cả Sách</li>
+            <li>Sách Mới</li>
+            <li>Bán Chạy</li>
+            <li>Liên Hệ</li>
+        </ul>
+    </nav>
+    </div>
+
+    <main class="main-container">
+        <aside class="sidebar">
+    <div class="sidebar-section">
+        <h3>Thể Loại</h3>
+        <ul class="category-list">
+            <li>Văn học nước ngoài <span>(1,240)</span></li>
+            <li>Tâm lý học <span>(850)</span></li>
+            <li>Kinh doanh - Đầu tư <span>(620)</span></li>
+            <li>Sách Thiếu nhi <span>(430)</span></li>
+        </ul>
+    </div>
+
+    <div class="sidebar-section">
+        <h3>Độ Tuổi</h3>
+        <div class="filter-group">
+            <div class="filter-item">
+                <label><input type="checkbox"> 12 tuổi trở lên</label>
+                <span class="filter-count">(34)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> 6 - 12 tuổi</label>
+                <span class="filter-count">(31)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> 3 - 6 tuổi</label>
+                <span class="filter-count">(13)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> 0 - 3 tuổi</label>
+                <span class="filter-count">(7)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <h3>Hình Thức</h3>
+        <div class="filter-group">
+            <div class="filter-item">
+                <label><input type="checkbox"> Bìa Cứng (Hardcover)</label>
+                <span class="filter-count">(655)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Bìa Mềm (Paperback)</label>
+                <span class="filter-count">(150)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Bản Giới Hạn</label>
+                <span class="filter-count">(65)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Sách Bỏ Túi</label>
+                <span class="filter-count">(109)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <h3>Nhà Xuất Bản</h3>
+        <div class="scrollable-list">
+            <div class="filter-item">
+                <label><input type="checkbox"> Nhã Nam</label>
+                <span class="filter-count">(120)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> NXB Trẻ</label>
+                <span class="filter-count">(95)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Kim Đồng</label>
+                <span class="filter-count">(82)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Đông A Books</label>
+                <span class="filter-count">(45)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Alpha Books</label>
+                <span class="filter-count">(30)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> First News</label>
+                <span class="filter-count">(27)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Omega Plus</label>
+                <span class="filter-count">(18)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> Thái Hà Books</label>
+                <span class="filter-count">(12)</span>
+            </div>
+            <div class="filter-item">
+                <label><input type="checkbox"> NXB Phụ Nữ</label>
+                <span class="filter-count">(8)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <h3>Khoảng Giá</h3>
+        <div class="price-filter" id="price-filters">
+            <label><input type="checkbox" data-range="0-100000"> Dưới 100.000đ</label>
+            <label><input type="checkbox" data-range="100000-300000"> 100k - 300k</label>
+            <label><input type="checkbox" data-range="300000-500000"> 300k - 500k</label>
+            <label><input type="checkbox" data-range="500000-9999999"> Trên 500.000đ</label>
+        </div>
+    </div>
+</aside>
+
+        <section class="content">
+            <div class="sort-bar">
+                <span id="result-count">Hiển thị 4 tựa sách phù hợp</span>
+                <select style="border: 1px solid var(--accent-sand); padding: 5px;">
+                    <option>Mới xuất bản</option>
+                    <option>Bán chạy nhất</option>
+                    <option>Giá: Thấp đến Cao</option>
+                </select>
+            </div>
+
+            <div class="product-grid" id="book-list">
+                <div class="book-card" data-price="125000">
+                    <div class="book-tag">BÁN CHẠY</div>
+                    <div class="book-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/9/9c/Nh%C3%A0_gi%E1%BA%A3_kim_%28s%C3%A1ch%29.jpg" class="book-img">
+                    </div>
+                    <div class="book-title">Nhà Giả Kim</div>
+                    <div class="book-author">Paulo Coelho</div>
+                    <div class="price-box">
+                        <span class="current-price">125.000đ</span>
+                        <span class="old-price">150.000đ</span>
+                    </div>
+                    <button class="btn-add">Thêm vào giỏ</button>
+                </div>
+
+                <div class="book-card" data-price="280000">
+                    <div class="book-tag">MỚI</div>
+                    <div class="book-img-container">
+                        <img src="https://static.oreka.vn/800-800_bcfdd33f-cd62-4ab6-afe0-1cb3e9b03602.webp" class="book-img">
+                    </div>
+                    <div class="book-title">Sapiens: Lược Sử Loài Người</div>
+                    <div class="book-author">Yuval Noah Harari</div>
+                    <div class="price-box">
+                        <span class="current-price">280.000đ</span>
+                    </div>
+                    <button class="btn-add">Thêm vào giỏ</button>
+                </div>
+
+                <div class="book-card" data-price="95000">
+                    <div class="book-img-container">
+                        <img src="https://static.oreka.vn/800-800_d569f7a9-519c-41b9-abda-cba7ac8c86c5.webp" class="book-img">
+                    </div>
+                    <div class="book-title">Tôi Tự Học</div>
+                    <div class="book-author">Nguyễn Duy Cần</div>
+                    <div class="price-box">
+                        <span class="current-price">95.000đ</span>
+                    </div>
+                    <button class="btn-add">Thêm vào giỏ</button>
+                </div>
+
+                <div class="book-card" data-price="95000">
+                    <div class="book-img-container">
+                        <img src="https://static.oreka.vn/800-800_d569f7a9-519c-41b9-abda-cba7ac8c86c5.webp" class="book-img">
+                    </div>
+                    <div class="book-title">Tôi Tự Học</div>
+                    <div class="book-author">Nguyễn Duy Cần</div>
+                    <div class="price-box">
+                        <span class="current-price">95.000đ</span>
+                    </div>
+                    <button class="btn-add">Thêm vào giỏ</button>
+                </div>
+
+                <div class="book-card" data-price="95000">
+                    <div class="book-img-container">
+                        <img src="https://static.oreka.vn/800-800_d569f7a9-519c-41b9-abda-cba7ac8c86c5.webp" class="book-img">
+                    </div>
+                    <div class="book-title">Tôi Tự Học</div>
+                    <div class="book-author">Nguyễn Duy Cần</div>
+                    <div class="price-box">
+                        <span class="current-price">95.000đ</span>
+                    </div>
+                    <button class="btn-add">Thêm vào giỏ</button>
+                </div>
+
+                <div class="book-card" data-price="95000">
+                    <div class="book-img-container">
+                        <img src="https://static.oreka.vn/800-800_d569f7a9-519c-41b9-abda-cba7ac8c86c5.webp" class="book-img">
+                    </div>
+                    <div class="book-title">Tôi Tự Học</div>
+                    <div class="book-author">Nguyễn Duy Cần</div>
+                    <div class="price-box">
+                        <span class="current-price">95.000đ</span>
+                    </div>
+                    <button class="btn-add">Thêm vào giỏ</button>
+                </div>
+
+                
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-top-bar">
+            <div class="footer-top-inner">
+                <div class="footer-top-item"><i class="fas fa-truck"></i> Miễn phí giao hàng đơn từ 500k</div>
+                <div class="footer-top-item"><i class="fas fa-shipping-fast"></i> Giao hàng hỏa tốc 4 tiếng</div>
+                <div class="footer-top-item"><i class="fas fa-store"></i> Hệ thống 20 cửa hàng toàn quốc</div>
+            </div>
+        </div>
+
+        <div class="footer-mid-section">
+            <div class="newsletter-box">
+                <div class="logo" style="margin-bottom: 10px;">
+                    <i class="fas fa-book-open"></i> HERITAGE BOOKS
+                </div>
+                <p style="color: #666; font-size: 13px;">Đăng ký để nhận thông tin sách mới và ưu đãi độc quyền.</p>
+                <div class="newsletter-input-group">
+                    <input type="email" placeholder="Nhập email của bạn...">
+                    <button>Đăng ký</button>
+                </div>
+            </div>
+            <div class="social-box">
+                <h4>Kết nối với chúng tôi</h4>
+                <div class="social-icons">
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-youtube"></i>
+                    <i class="fab fa-tiktok"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-info-grid">
+            <div class="footer-col contact-info">
+                <h5>Thông tin liên hệ</h5>
+                <p><i class="fas fa-map-marker-alt"></i> 33-35 Đường Sách Nguyễn Văn Bình, Q.1, TP.HCM</p>
+                <p><i class="fas fa-phone-alt"></i> 1900 1234 (8:00 - 21:00)</p>
+                <p><i class="fas fa-envelope"></i> cskh@heritagebooks.vn</p>
+                <p><i class="far fa-clock"></i> Thứ 2 - Chủ Nhật: 8:00 - 22:00</p>
+                
+                <img src="https://dangkywebvoibocongthuong.com/wp-content/uploads/2021/11/logo-da-thong-bao-bo-cong-thuong.png" class="gov-icon" alt="Đã thông báo bộ công thương">
+            </div>
+
+            <div class="footer-col">
+                <h5>Điều khoản & Chính sách</h5>
+                <ul>
+                    <li>Giới thiệu về Heritage Books</li>
+                    <li>Điều khoản giao dịch chung</li>
+                    <li>Chính sách bảo mật thanh toán</li>
+                    <li>Chính sách bảo hành & đổi trả</li>
+                    <li>Chính sách vận chuyển</li>
+                    <li>Câu hỏi thường gặp (FAQs)</li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h5>Không gian trải nghiệm</h5>
+                <div class="store-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1000&auto=format&fit=crop" alt="Cửa hàng Heritage Books">
+                </div>
+                <p style="margin-top: 10px; font-size: 13px; color: #666;">
+                    <i class="fas fa-map-marked-alt"></i> Xem bản đồ đường đi
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2026 Công ty Cổ phần Văn hóa Heritage. Giấy CNĐKDN số 0301234567 do Sở KHĐT TP.HCM cấp.
+        </div>
+    </footer>
+
+    <div class="chat-widget">
+        <i class="fas fa-comment-dots"></i> Hỗ trợ ngay
+    </div>
+
+    <div id="toast-msg" class="toast">Đã thêm sách vào giỏ hàng thành công!</div>
+    <button id="scrollToTopBtn" title="Lên đầu trang">
+    <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 1. Banner quảng cáo chạy tự động
+       document.addEventListener("DOMContentLoaded", function() {
+    // --- KHÔI PHỤC TÍNH NĂNG CHẠY CHỮ BANNER ---
+    const ads = [
+        "KHAI XUÂN NHƯ Ý - LÌ XÌ HẾT Ý: GIẢM ĐẾN 60% TOÀN SÀN",
+        "MIỄN PHÍ VẬN CHUYỂN CHO ĐƠN HÀNG TỪ 300.000Đ",
+        "TẶNG BOOKMARK GỖ CHO MỌI ĐƠN HÀNG TRONG HÔM NAY",
+        "MUA SÁCH TẶNG SÁCH - ƯU ĐÃI GIỜ VÀNG 12H - 14H"
+    ];
+
+    let currentAd = 0;
+    const bannerElement = document.getElementById('promo-banner');
+
+    if (bannerElement) {
+        // Đặt hiệu ứng chuyển đổi mượt mà trong CSS bằng JS luôn để tránh quên
+        bannerElement.style.transition = "opacity 0.9s ease-in-out";
+
+        setInterval(() => {
+            // 1. Làm mờ chữ đi
+            bannerElement.style.opacity = 0;
+
+            // 2. Đợi 0.5 giây cho mờ hẳn rồi mới đổi chữ
+            setTimeout(() => {
+                currentAd = (currentAd + 1) % ads.length;
+                bannerElement.innerText = ads[currentAd];
+                
+                // 3. Hiện rõ lại
+                bannerElement.style.opacity = 1;
+            }, 700); 
+
+        }, 3400); // Đổi mỗi 3.5 giây
+    } else {
+        console.error("Lỗi: Không tìm thấy phần tử có id='promo-banner'. Hãy kiểm tra lại HTML.");
+    }
+    });
+        // 2. Xử lý giỏ hàng
+        let cartCount = 0;
+        document.querySelectorAll('.btn-add').forEach(button => {
+            button.addEventListener('click', () => {
+                cartCount++;
+                document.getElementById('cart-count-badge').innerText = cartCount;
+                
+                // Show Toast
+                const toast = document.getElementById('toast-msg');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            });
+        });
+
+        // 3. Bộ lọc giá
+        const filterCheckboxes = document.querySelectorAll('#price-filters input');
+        const bookCards = document.querySelectorAll('.book-card');
+
+        filterCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const activeFilters = Array.from(filterCheckboxes).filter(c => c.checked);
+                let visibleCount = 0;
+
+                bookCards.forEach(card => {
+                    const price = parseInt(card.getAttribute('data-price'));
+                    if (activeFilters.length === 0) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        let isMatch = false;
+                        activeFilters.forEach(filter => {
+                            const [min, max] = filter.getAttribute('data-range').split('-').map(Number);
+                            if (price >= min && price <= max) isMatch = true;
+                        });
+                        card.style.display = isMatch ? 'flex' : 'none';
+                        if (isMatch) visibleCount++;
+                    }
+                });
+                document.getElementById('result-count').innerText = `Hiển thị ${visibleCount} tựa sách phù hợp`;
+            });
+        });
+        // --- XỬ LÝ NÚT VỀ ĐẦU TRANG (Phiên bản mượt tùy chỉnh) ---
+        const scrollBtn = document.getElementById("scrollToTopBtn");
+
+        // 1. Hiện nút khi cuộn xuống
+        window.onscroll = function() { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollBtn.style.display = "block";
+            } else {
+                scrollBtn.style.display = "none";
+            }
+        }
+
+        // 2. Xử lý khi bấm nút (Chạy hàm cuộn mượt)
+        scrollBtn.addEventListener("click", function() {
+            // Tham số 1500 nghĩa là 1.5 giây. 
+            // Bạn có thể sửa thành 2000 (2 giây) nếu muốn chậm hơn nữa.
+            scrollToTopSlowly(1500); 
+        });
+
+        // Hàm tính toán chuyển động mượt mà
+        function scrollToTopSlowly(duration) {
+            const start = window.scrollY || document.documentElement.scrollTop;
+            const startTime = performance.now();
+
+            function animation(currentTime) {
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1); // Đảm bảo tiến trình max là 1
+
+                // Công thức Easing (Ease Out Cubic): Giúp chuyển động nhanh lúc đầu và chậm dần khi đến đích
+                const ease = 1 - Math.pow(1 - progress, 3);
+
+                window.scrollTo(0, start * (1 - ease));
+
+                if (timeElapsed < duration) {
+                    requestAnimationFrame(animation); // Tiếp tục chạy cho đến khi hết thời gian
+                }
+            }
+
+            requestAnimationFrame(animation);
+        }
+        // --- XỬ LÝ SMART STICKY HEADER (Hiện khi cuộn lên, Ẩn khi cuộn xuống) ---
+        let lastScrollTop = 0;
+        const headerContainer = document.getElementById('sticky-header-container');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Nếu đang ở trên cùng trang web (top = 0) thì luôn hiện header
+            if (scrollTop <= 0) {
+                headerContainer.classList.remove('header-hidden');
+                lastScrollTop = scrollTop;
+                return;
+            }
+
+            if (scrollTop > lastScrollTop) {
+                // Đang cuộn XUỐNG -> Thêm class để ẨN header
+                headerContainer.classList.add('header-hidden');
+            } else {
+                // Đang cuộn LÊN -> Xóa class để HIỆN header
+                headerContainer.classList.remove('header-hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+    </script>
+</body>
+</html>
