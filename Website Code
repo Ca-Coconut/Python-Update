@@ -131,14 +131,59 @@
     align-items: flex-start; 
     }
 
-    /* SIDEBAR - Tối giản, nền trắng */
-    .sidebar { width: 240px; flex-shrink: 0; }
-    .sidebar-section { 
-        background: var(--bg-white); padding: 20px; 
-        border: 1px solid var(--border); margin-bottom: 20px; 
-        border-radius: 4px; /* Bo góc nhẹ */
-        box-shadow: none; /* Bỏ đổ bóng đậm cũ */
-    }
+    /* --- CSS CHO SIDEBAR DÍNH & CUỘN ĐƯỢC --- */
+.sidebar {
+    width: 250px;       /* Chiều rộng cột */
+    flex-shrink: 0;     /* Không bị co lại */
+    
+    /* 👇 QUAN TRỌNG: Làm cho sidebar dính lại */
+    position: -webkit-sticky; 
+    position: sticky;
+    
+    /* Cách mép trên 180px (để không bị cái Header che mất) */
+    top: 180px;         
+    
+    /* 👇 QUAN TRỌNG: Tạo thanh cuộn riêng nếu nội dung quá dài */
+    height: fit-content;
+    max-height: calc(100vh - 200px); /* Chiều cao tối đa = Chiều cao màn hình trừ đi phần đầu */
+    overflow-y: auto;   /* Hiện thanh cuộn dọc nếu nội dung tràn */
+    
+    /* Trang trí thanh cuộn cho đẹp (Webkit browsers) */
+    padding-right: 5px; /* Chừa chỗ cho thanh cuộn */
+}
+
+/* Tùy chỉnh thanh cuộn của Sidebar cho nhỏ gọn, thẩm mỹ */
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; } /* Màu thanh cuộn theo tông màu web */
+
+/* Style cho các tiêu đề trong Sidebar */
+.sidebar-section {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ddd; /* Đường kẻ ngăn cách mờ */
+}
+
+.sidebar h3 {
+    font-size: 16px; 
+    font-weight: 800; 
+    margin-bottom: 15px; 
+    color: var(--text-main);
+    text-transform: uppercase;
+}
+
+/* Danh sách các mục checkbox */
+.filter-item {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 8px; 
+    font-size: 14px; 
+    color: var(--text-main);
+    cursor: pointer;
+}
+.filter-item label { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.filter-count { color: #999; font-size: 12px; }
     .sidebar h3 { 
         font-size: 16px; margin-bottom: 15px; color: var(--primary); 
         border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 700;
@@ -415,111 +460,52 @@
 
     <main class="main-container">
         <aside class="sidebar">
+    
     <div class="sidebar-section">
         <h3>Thể Loại</h3>
-        <ul class="category-list">
-            <li>Văn học nước ngoài <span>(1,240)</span></li>
-            <li>Tâm lý học <span>(850)</span></li>
-            <li>Kinh doanh - Đầu tư <span>(620)</span></li>
-            <li>Sách Thiếu nhi <span>(430)</span></li>
-        </ul>
+        <div class="filter-item"><label><input type="checkbox"> Văn học nước ngoài</label> <span class="filter-count">(1,240)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Tâm lý học</label> <span class="filter-count">(850)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Kinh doanh - Đầu tư</label> <span class="filter-count">(620)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Sách Thiếu nhi</label> <span class="filter-count">(430)</span></div>
     </div>
 
     <div class="sidebar-section">
         <h3>Độ Tuổi</h3>
-        <div class="filter-group">
-            <div class="filter-item">
-                <label><input type="checkbox"> 12 tuổi trở lên</label>
-                <span class="filter-count">(34)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> 6 - 12 tuổi</label>
-                <span class="filter-count">(31)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> 3 - 6 tuổi</label>
-                <span class="filter-count">(13)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> 0 - 3 tuổi</label>
-                <span class="filter-count">(7)</span>
-            </div>
-        </div>
+        <div class="filter-item"><label><input type="checkbox"> 12 tuổi trở lên</label> <span class="filter-count">(34)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> 6 - 12 tuổi</label> <span class="filter-count">(31)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> 3 - 6 tuổi</label> <span class="filter-count">(13)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> 0 - 3 tuổi</label> <span class="filter-count">(7)</span></div>
     </div>
 
     <div class="sidebar-section">
         <h3>Hình Thức</h3>
-        <div class="filter-group">
-            <div class="filter-item">
-                <label><input type="checkbox"> Bìa Cứng (Hardcover)</label>
-                <span class="filter-count">(655)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Bìa Mềm (Paperback)</label>
-                <span class="filter-count">(150)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Bản Giới Hạn</label>
-                <span class="filter-count">(65)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Sách Bỏ Túi</label>
-                <span class="filter-count">(109)</span>
-            </div>
-        </div>
+        <div class="filter-item"><label><input type="checkbox"> Bìa Cứng (Hardcover)</label> <span class="filter-count">(655)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Bìa Mềm (Paperback)</label> <span class="filter-count">(150)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Bản Giới Hạn</label> <span class="filter-count">(65)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Sách Bỏ Túi</label> <span class="filter-count">(109)</span></div>
     </div>
 
     <div class="sidebar-section">
         <h3>Nhà Xuất Bản</h3>
-        <div class="scrollable-list">
-            <div class="filter-item">
-                <label><input type="checkbox"> Nhã Nam</label>
-                <span class="filter-count">(120)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> NXB Trẻ</label>
-                <span class="filter-count">(95)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Kim Đồng</label>
-                <span class="filter-count">(82)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Đông A Books</label>
-                <span class="filter-count">(45)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Alpha Books</label>
-                <span class="filter-count">(30)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> First News</label>
-                <span class="filter-count">(27)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Omega Plus</label>
-                <span class="filter-count">(18)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> Thái Hà Books</label>
-                <span class="filter-count">(12)</span>
-            </div>
-            <div class="filter-item">
-                <label><input type="checkbox"> NXB Phụ Nữ</label>
-                <span class="filter-count">(8)</span>
-            </div>
-        </div>
+        <div class="filter-item"><label><input type="checkbox"> Nhã Nam</label> <span class="filter-count">(120)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> NXB Trẻ</label> <span class="filter-count">(95)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Kim Đồng</label> <span class="filter-count">(82)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Đông A Books</label> <span class="filter-count">(45)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Alpha Books</label> <span class="filter-count">(30)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> First News</label> <span class="filter-count">(27)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Omega Plus</label> <span class="filter-count">(18)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> Thái Hà Books</label> <span class="filter-count">(12)</span></div>
+        <div class="filter-item"><label><input type="checkbox"> NXB Phụ Nữ</label> <span class="filter-count">(8)</span></div>
     </div>
 
     <div class="sidebar-section">
         <h3>Khoảng Giá</h3>
-        <div class="price-filter" id="price-filters">
-            <label><input type="checkbox" data-range="0-100000"> Dưới 100.000đ</label>
-            <label><input type="checkbox" data-range="100000-300000"> 100k - 300k</label>
-            <label><input type="checkbox" data-range="300000-500000"> 300k - 500k</label>
-            <label><input type="checkbox" data-range="500000-9999999"> Trên 500.000đ</label>
-        </div>
+        <div class="filter-item"><label><input type="checkbox"> Dưới 100.000đ</label></div>
+        <div class="filter-item"><label><input type="checkbox"> 100k - 300k</label></div>
+        <div class="filter-item"><label><input type="checkbox"> 300k - 500k</label></div>
+        <div class="filter-item"><label><input type="checkbox"> Trên 500.000đ</label></div>
     </div>
+
 </aside>
 
         <section class="content">
