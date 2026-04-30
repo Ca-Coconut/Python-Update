@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Heritage Bookshop | Hiệu Sách Di Sản</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+    /* --- BẢNG MÀU TỐI GIẢN & HIỆN ĐẠI (MINIMALIST) --- */
+    :root {
+        --bg-page: #F5F5F5;       /* Xám rất nhạt cho nền toàn trang */
+        --bg-white: #FFFFFF;      /* Trắng tinh cho các khung/thẻ */
+        --primary: #000000;       /* Màu chủ đạo: Đen tuyền */
+        --text-main: #333333;     /* Màu chữ chính: Xám đậm dễ đọc */
+        --text-light: #666666;    /* Màu chữ phụ: Xám trung tính */
+        --border: #E5E5E5;        /* Màu viền: Xám nhạt tinh tế */
+        --accent: #2196F3;        /* (Tùy chọn) Màu nhấn xanh dương nhẹ kiểu Tiki/Amazon - hoặc để Đen */
+    }
+
+    /* --- CSS CHO SMART HEADER --- */
+
+    /* Đẩy nội dung trang xuống để không bị Header che mất lúc mới vào */
+    body {
+        padding-top: 160px; /* Số này áng chừng chiều cao của Banner + Header + Nav */
+    }
+
+    #sticky-header-container {
+        position: fixed;     /* Cố định vị trí so với màn hình */
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 999;        /* Luôn nằm trên cùng mọi thứ */
+        transition: transform 0.3s ease-in-out; /* Hiệu ứng trượt mượt mà 0.3s */
+        background-color: var(--bg-white); /* Đảm bảo nền trắng không bị trong suốt */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Đổ bóng nhẹ cho đẹp */
+    }
+
+    /* Class này dùng để ẩn Header khi cuộn xuống */
+    .header-hidden {
+        transform: translateY(-100%); /* Dịch chuyển toàn bộ header lên trên khuất màn hình */
+    }
+
+    /* Thiết lập cơ bản */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+    
+    /* Font tiêu đề vẫn giữ Playfair nhưng màu sắc hiện đại hơn */
+    h1, h2, h3, .logo { font-family: 'Playfair Display', serif; color: var(--primary); }
+    
+    body { background-color: var(--bg-page); color: var(--text-main); line-height: 1.6; }
+
+    /* --- HEADER & BANNER --- */
+    .top-banner { 
+        background: var(--primary); color: #fff; 
+        padding: 15px 0; font-size: 16px; text-align: center; 
+        letter-spacing: 1px; text-transform: uppercase; font-weight: 500;
+    }
+
+    header { background-color: var(--bg-white); border-bottom: 1px solid var(--border); padding: 20px 0; }
+    .header-container { 
+        display: flex; align-items: center; justify-content: space-between; 
+        max-width: 1200px; margin: 0 auto; padding: 0 20px; 
+    }
+    
+    /* --- SỬA LOGO THÀNH FONT KHÔNG CHÂN --- */
+.logo {
+    /* 👇 Dòng quan trọng nhất: Đổi sang font không chân */
+    font-family: 'Roboto', Helvetica, Arial, sans-serif; 
+    
+    font-size: 32px; 
+    color: var(--primary); 
+    font-weight: 900;       /* Tăng độ đậm lên mức cao nhất để logo dày dặn */
+    text-transform: uppercase; 
+    letter-spacing: 2px;    /* Tăng khoảng cách giữa các chữ cái cho thoáng và sang */
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+
+/* Nếu bạn muốn icon sách bên cạnh cũng to và đậm theo */
+.logo i {
+    font-size: 36px;
+    margin-right: 5px;
+}
+
+    .search-bar { flex: 1; margin: 0 40px; position: relative; }
+    .search-bar input { 
+        width: 100%; padding: 10px 20px; border-radius: 4px; 
+        border: 1px solid var(--border); outline: none; background: #fff; color: var(--text-main);
+    }
+    .search-bar input:focus { border-color: var(--text-main); }
+    .search-bar button {
+        position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+        background: none; border: none; color: var(--text-light); cursor: pointer;
+    }
+
+    .user-actions { display: flex; gap: 20px; align-items: center; }
+    .user-actions div { cursor: pointer; color: var(--text-main); font-size: 14px; position: relative; font-weight: 500; }
+    .user-actions i { font-size: 18px; color: var(--text-main); margin-right: 5px; }
+    
+    #cart-count-badge {
+        position: absolute; top: -8px; right: -12px; background: #D32F2F; /* Màu đỏ nổi bật cho thông báo */
+        color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 50%; font-weight: bold;
+    }
+
+    /* NAV BAR - Phong cách hiện đại: Nền trắng, chữ đen, đường kẻ dưới */
+    nav { background: var(--bg-white); border-bottom: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+    nav ul { 
+        display: flex; max-width: 1200px; margin: 0 auto; 
+        padding: 0 20px; list-style: none; justify-content: center; gap: 10px;
+    }
+    nav ul li { 
+        color: var(--text-main); padding: 15px 15px; font-size: 14px; 
+        font-weight: 500; text-transform: uppercase; cursor: pointer; transition: 0.2s;
+        border-bottom: 2px solid transparent;
+    }
+    nav ul li:hover { color: var(--primary); border-bottom: 2px solid var(--primary); background: none; }
+
+    /* --- TÌM VÀ SỬA ĐOẠN NÀY --- */
+    .main-container { 
+    display: flex; 
+    
+    /* 👇 SỬA DÒNG NÀY: Tăng từ 1300px lên 95% để tràn màn hình rộng hơn */
+    max-width: 95%; 
+    
+    margin: 60px auto 40px; 
+    padding: 0 20px; 
+    gap: 30px; /* Tăng khoảng cách giữa Sidebar và Nội dung cho thoáng */
+    align-items: flex-start; 
+    }
+
+    /* --- CSS CHO SIDEBAR DÍNH & CUỘN ĐƯỢC --- */
+.sidebar {
+    width: 250px;       /* Chiều rộng cột */
+    flex-shrink: 0;     /* Không bị co lại */
+    
+    /* 👇 QUAN TRỌNG: Làm cho sidebar dính lại */
+    position: -webkit-sticky; 
+    position: sticky;
+    
+    /* Cách mép trên 180px (để không bị cái Header che mất) */
+    top: 180px;         
+    
+    /* 👇 QUAN TRỌNG: Tạo thanh cuộn riêng nếu nội dung quá dài */
+    height: fit-content;
+    max-height: calc(100vh - 200px); /* Chiều cao tối đa = Chiều cao màn hình trừ đi phần đầu */
+    overflow-y: auto;   /* Hiện thanh cuộn dọc nếu nội dung tràn */
+    
+    /* Trang trí thanh cuộn cho đẹp (Webkit browsers) */
+    padding-right: 5px; /* Chừa chỗ cho thanh cuộn */
+}
+
+/* Tùy chỉnh thanh cuộn của Sidebar cho nhỏ gọn, thẩm mỹ */
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; } /* Màu thanh cuộn theo tông màu web */
+
+/* Style cho các tiêu đề trong Sidebar */
+.sidebar-section {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ddd; /* Đường kẻ ngăn cách mờ */
+}
+
+.sidebar h3 {
+    font-size: 16px; 
+    font-weight: 800; 
+    margin-bottom: 15px; 
+    color: var(--text-main);
+    text-transform: uppercase;
+}
+
+/* Danh sách các mục checkbox */
+.filter-item {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 8px; 
+    font-size: 14px; 
+    color: var(--text-main);
+    cursor: pointer;
+}
+.filter-item label { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.filter-count { color: #999; font-size: 12px; }
+    .sidebar h3 { 
+        font-size: 16px; margin-bottom: 15px; color: var(--primary); 
+        border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 700;
+        font-family: 'Roboto', sans-serif; text-transform: uppercase;
+    }
+    .category-list li { 
+        list-style: none; padding: 8px 0; border-bottom: 1px solid #f9f9f9; 
+        font-size: 14px; cursor: pointer; color: var(--text-light); transition: 0.2s;
+    }
+    .category-list li:hover { padding-left: 5px; color: var(--primary); }
+    
+    .price-filter label, .filter-item label { 
+        display: flex; align-items: center; gap: 10px; margin: 10px 0; 
+        font-size: 14px; cursor: pointer; color: var(--text-main); 
+    }
+
+    /* Scrollbar cho Sidebar */
+    .scrollable-list { max-height: 200px; overflow-y: auto; padding-right: 5px; }
+    .scrollable-list::-webkit-scrollbar { width: 4px; }
+    .scrollable-list::-webkit-scrollbar-track { background: #f1f1f1; }
+    .scrollable-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+    .filter-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; color: var(--text-main); }
+    .filter-count { color: #999; font-size: 12px; }
+
+    /* --- CONTENT --- */
+    .content { flex: 1; }
+    .sort-bar { 
+        display: flex; justify-content: space-between; align-items: center; 
+        margin-bottom: 20px; padding: 15px; background: var(--bg-white); 
+        border: 1px solid var(--border); border-radius: 4px;
+    }
+    
+    .product-grid { 
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+        gap: 20px; 
+    }
+
+    /* --- SÁCH CARD - Hiện đại, sạch sẽ --- */
+    .book-card { 
+        background: var(--bg-white); padding: 15px; border-radius: 4px; 
+        border: 1px solid var(--border); position: relative; transition: 0.3s;
+        display: flex; flex-direction: column;
+    }
+    .book-card:hover { 
+        border-color: #bbb;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05); /* Đổ bóng nhẹ nhàng, hiện đại */
+    }
+
+    .book-img-container {
+        width: 100%; height: 260px; background: #fff;
+        margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        /* Bỏ border/shadow của ảnh để ảnh nổi trên nền trắng */
+    }
+    .book-img { 
+        max-width: 100%; max-height: 100%; object-fit: contain; /* Giữ nguyên tỉ lệ ảnh */
+        transition: 0.3s;
+    }
+    .book-card:hover .book-img { transform: scale(1.03); }
+
+    .book-tag { 
+        position: absolute; top: 10px; left: 10px; background: #333;
+        color: #fff; font-size: 10px; padding: 4px 8px; font-weight: bold; border-radius: 2px;
+    }
+
+    .book-title { 
+        font-family: 'Roboto', sans-serif; /* Dùng font hiện đại cho tên sách */
+        font-size: 16px; font-weight: 500; color: var(--text-main); margin-bottom: 5px;
+        height: 44px; overflow: hidden; line-height: 1.4;
+    }
+    .book-author { font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
+
+    .price-box { margin-top: auto; display: flex; align-items: baseline; gap: 8px; }
+    .current-price { color: #000; font-size: 18px; font-weight: 700; } /* Giá màu đen đậm */
+    .old-price { color: #999; text-decoration: line-through; font-size: 13px; }
+
+    .btn-add { 
+        width: 100%; background: #fff; color: var(--primary); 
+        border: 1px solid var(--primary); padding: 10px; margin-top: 15px; cursor: pointer; 
+        font-weight: 600; text-transform: uppercase; font-size: 12px; transition: 0.2s; border-radius: 4px;
+    }
+    .btn-add:hover { background: var(--primary); color: #fff; }
+
+    /* --- FOOTER NÂNG CẤP (Layout giống mẫu, Style Minimalist) --- */
+    footer {
+        background-color: var(--bg-white);
+        border-top: 1px solid var(--border);
+        margin-top: 50px;
+        font-size: 14px;
+        color: var(--text-main);
+    }
+
+    /* 1. Thanh Top Bar cam kết */
+    .footer-top-bar {
+        background-color: var(--primary); /* Màu đen */
+        color: #fff;
+        padding: 10px 0;
+        font-size: 13px;
+        font-weight: 500;
+    }
+    .footer-top-inner {
+        max-width: 1200px; margin: 0 auto; padding: 0 20px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-top-item { display: flex; align-items: center; gap: 8px; }
+    .footer-top-item i { color: #fff; font-size: 16px; }
+
+    /* 2. Phần Newsletter & Social (Giữa) */
+    .footer-mid-section {
+        max-width: 1200px; margin: 0 auto; padding: 40px 20px;
+        display: flex; justify-content: space-between; align-items: flex-start;
+        border-bottom: 1px solid var(--border);
+        gap: 40px;
+    }
+
+    /* Bên trái: Đăng ký email */
+    .newsletter-box { flex: 1; }
+    .newsletter-box h4 { font-size: 18px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .newsletter-input-group {
+        display: flex; gap: 10px; margin-top: 15px; max-width: 500px;
+    }
+    .newsletter-input-group input {
+        flex: 1; padding: 10px 15px; border: 1px solid #ccc; outline: none; border-radius: 4px;
+    }
+    .newsletter-input-group button {
+        background: var(--primary); color: #fff; border: none; padding: 0 25px;
+        font-weight: bold; cursor: pointer; border-radius: 4px;
+    }
+
+    /* Bên phải: Social Media */
+    .social-box h4 { font-size: 16px; margin-bottom: 15px; }
+    .social-icons { display: flex; gap: 15px; }
+    .social-icons i {
+        font-size: 24px; color: var(--text-main); cursor: pointer; transition: 0.2s;
+    }
+    .social-icons i:hover { color: var(--primary); transform: scale(1.1); }
+
+    /* 3. Phần Thông tin chi tiết (3 Cột) */
+    .footer-info-grid {
+        max-width: 1200px; margin: 0 auto; padding: 40px 20px;
+        display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; /* Chia tỉ lệ cột */
+        gap: 40px;
+    }
+    .footer-col h5 {
+        font-size: 16px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; color: var(--text-light); cursor: pointer; }
+    .footer-col ul li:hover { color: var(--primary); text-decoration: underline; }
+
+    .contact-info p { margin-bottom: 12px; display: flex; gap: 10px; color: var(--text-light); }
+    .contact-info i { margin-top: 4px; color: var(--primary); }
+
+    /* Ảnh cửa hàng ở cột 3 */
+    .store-img-wrapper {
+        width: 100%; height: 180px; overflow: hidden; border-radius: 8px;
+        position: relative;
+    }
+    .store-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* 4. Bottom bản quyền */
+    .footer-bottom {
+        background: #f9f9f9; padding: 20px 0; text-align: center; font-size: 12px; color: #888;
+    }
+    .gov-icon { height: 60px; margin-top: 10px; opacity: 0.8; } /* Icon bộ công thương */
+
+    /* 5. Nút Chat Nổi */
+    .chat-widget {
+        position: fixed; bottom: 30px; right: 30px;
+        background: var(--primary); color: #fff;
+        padding: 12px 25px; border-radius: 30px;
+        font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        cursor: pointer; display: flex; align-items: center; gap: 10px; z-index: 999;
+        transition: 0.3s;
+    }
+    .chat-widget:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+
+    /* Responsive cho Footer */
+    @media (max-width: 768px) {
+        .footer-top-inner { flex-direction: column; gap: 5px; text-align: center; }
+        .footer-mid-section { flex-direction: column; gap: 30px; }
+        .footer-info-grid { grid-template-columns: 1fr; gap: 30px; }
+        .newsletter-input-group { width: 100%; }
+    }
+
+    /* Toast */
+    .toast {
+        position: fixed; top: 20px; right: -500px; background: #333;
+        color: #fff; padding: 15px 25px; border-left: 5px solid #fff;
+        transition: 0.5s; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        white-space: nowrap; border-radius: 4px;
+    }
+    .toast.show { right: 20px; }
+
+    /* Responsive đơn giản */
+    @media (max-width: 768px) {
+        .header-container { flex-direction: column; gap: 15px; }
+        .search-bar { margin: 10px 0; width: 100%; }
+        nav ul { flex-wrap: wrap; justify-content: center; }
+        .main-container { flex-direction: column; }
+        .sidebar { width: 100%; }
+        .product-grid { grid-template-columns: repeat(2, 1fr); }
+        .footer-grid { grid-template-columns: 1fr; text-align: center; }
+    }
+    /* --- NÚT VỀ ĐẦU TRANG (SCROLL TO TOP) --- */
+    #scrollToTopBtn {
+    display: none; /* Mặc định ẩn, chỉ hiện khi cuộn xuống */
+    position: fixed;
+    bottom: 90px; /* Nằm cao hơn nút Chat (nút Chat là 30px) */
+    right: 30px;
+    z-index: 99; /* Luôn nổi lên trên */
+    border: none;
+    outline: none;
+    background-color: var(--primary); /* Màu đen đồng bộ theme */
+    color: white; /* Mũi tên màu trắng */
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%; /* Bo tròn hoàn toàn */
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Đổ bóng nhẹ */
+    transition: 0.3s;
+    opacity: 0.8; /* Hơi trong suốt nhẹ */
+    }
+
+    #scrollToTopBtn:hover {
+    background-color: #555; /* Màu xám khi di chuột vào */
+    opacity: 1;
+    transform: translateY(-3px); /* Hiệu ứng bay lên nhẹ */
+    }
+    
+    </style>
+</head>
+<body>
+
+
+
+
+
+</body>
+</html>
